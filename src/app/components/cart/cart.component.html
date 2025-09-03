@@ -1,0 +1,58 @@
+<div class="cart-container">
+  <h1>Moja korpa rezervacija</h1>
+
+  <div *ngIf="(reservations$ | async) as reservations; else loading">
+    <div *ngIf="reservations.length > 0; else emptyCart">
+      <div *ngFor="let res of reservations" class="cart-item">
+        <div class="item-poster">
+          <img [src]="res.projection.posterUrl" [alt]="res.projection.title">
+        </div>
+        <div class="item-info">
+          <h3>{{ res.projection.title }}</h3>
+          <p>Vreme projekcije: {{ res.selectedTime }}</p>
+          <p>Cena: {{ res.projection.price }} RSD</p>
+          <mat-chip class="status-chip" [color]="getStatusColor(res.status)">{{ res.status }}</mat-chip>
+        </div>
+        <div class="item-actions">
+          <button
+            mat-stroked-button
+            color="warn"
+            *ngIf="res.status === 'rezervisano'"
+            (click)="updateStatus(res.id, 'otkazano')">
+            Otkaži
+          </button>
+           <button
+            mat-stroked-button
+            color="primary"
+            *ngIf="res.status === 'rezervisano'"
+            (click)="updateStatus(res.id, 'gledano')">
+            Označi kao Gledano
+          </button>
+          <button
+            mat-stroked-button
+            color="warn"
+            *ngIf="res.status === 'gledano'"
+            (click)="removeReservation(res.id)">
+            Ukloni
+          </button>
+        </div>
+      </div>
+
+      <div class="total-section">
+        Ukupna cena: {{ (totalPrice$ | async) | number:'1.2-2' }} RSD
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p>Učitavanje korpe...</p>
+  </ng-template>
+
+  <ng-template #emptyCart>
+    <div class="empty-cart">
+        <mat-icon>remove_shopping_cart</mat-icon>
+        <p>Vaša korpa je prazna.</p>
+        <a mat-raised-button color="primary" routerLink="/">Pogledaj repertoar</a>
+    </div>
+  </ng-template>
+</div>

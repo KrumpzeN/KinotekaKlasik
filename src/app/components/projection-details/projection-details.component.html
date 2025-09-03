@@ -1,0 +1,83 @@
+<div *ngIf="projection$ | async as p" class="details-container">
+  <button mat-stroked-button color="primary" routerLink="/">
+    <mat-icon>arrow_back</mat-icon>
+    Nazad na repertoar
+  </button>
+
+  <div class="content">
+    <div class="poster">
+      <img [src]="p.posterUrl" [alt]="p.title">
+    </div>
+    <div class="info">
+      <h1>{{ p.title }} ({{p.year}})</h1>
+      <h3>Režiser: {{ p.director }}</h3>
+      <p>{{ p.description }}</p>
+
+      <mat-chip-listbox aria-label="Žanrovi">
+        <mat-chip *ngFor="let genre of p.genre">{{ genre }}</mat-chip>
+      </mat-chip-listbox>
+
+      <div class="meta-info">
+        <span><mat-icon>schedule</mat-icon> {{ p.duration }} min</span>
+        <span><mat-icon>star</mat-icon> Ocena: {{ p.rating }}</span>
+        <span><mat-icon>sell</mat-icon> {{ p.price }} RSD</span>
+      </div>
+
+      <div class="reservation-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Izaberite vreme projekcije</mat-label>
+          <mat-select [formControl]="selectedTime">
+            <mat-option *ngFor="let time of p.projectionTimes" [value]="time">
+              {{ time }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="accent" class="reserve-button" 
+                (click)="reserve(p)" [disabled]="selectedTime.invalid">
+          <mat-icon>confirmation_number</mat-icon>
+          Rezerviši kartu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="reviews-section">
+    <h2>Recenzije korisnika</h2>
+    <div *ngIf="p.reviews.length > 0; else noReviews">
+      <mat-card *ngFor="let review of p.reviews" class="review-card">
+        <mat-card-header>
+           <mat-icon mat-card-avatar>account_circle</mat-icon>
+          <mat-card-title>Ocena: {{review.rating}}/5</mat-card-title>
+          <mat-card-subtitle>{{review.user}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{review.comment}}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <ng-template #noReviews>
+      <p>Trenutno nema recenzija za ovaj film.</p>
+    </ng-template>
+
+    <div *ngIf="canLeaveReview$ | async" class="review-form-section">
+      <h3>Ostavite Vašu recenziju</h3>
+      <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+        <mat-form-field appearance="outline">
+          <mat-label>Ocena (1-5)</mat-label>
+          <input matInput type="number" formControlName="rating" min="1" max="5">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Komentar</mat-label>
+          <textarea matInput formControlName="comment" rows="4"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="reviewForm.invalid">
+          Pošalji recenziju
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

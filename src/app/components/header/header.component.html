@@ -1,0 +1,37 @@
+<mat-toolbar color="primary" class="main-toolbar">
+  <a routerLink="/" class="logo">
+    <mat-icon>theaters</mat-icon>
+    <span>Kinoteka Klasik</span>
+  </a>
+
+  <span class="toolbar-spacer"></span>
+
+  <!-- AKO POSTOJI KORISNIK, PRIKAŽI OVO -->
+  <div *ngIf="currentUser$ | async as user; else guestView">
+    <button mat-button routerLink="/cart">
+      <mat-icon>shopping_cart</mat-icon>
+      Korpa
+    </button>
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>account_circle</mat-icon>
+      {{ user.firstName }}
+    </button>
+    <!-- Meni koji se otvara -->
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>Moj Profil</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Odjava</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <!-- AKO NE POSTOJI KORISNIK, PRIKAŽI OVO -->
+  <ng-template #guestView>
+    <button mat-stroked-button routerLink="/login" class="auth-button">Prijava</button>
+    <button mat-flat-button color="accent" routerLink="/register" class="auth-button">Registracija</button>
+  </ng-template>
+</mat-toolbar>

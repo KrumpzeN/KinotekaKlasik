@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="header-section">
+    <h1>Na repertoaru</h1>
+    <div class="filters">
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Pretraga po nazivu</mat-label>
+        <input matInput [formControl]="searchTerm" placeholder="Npr. Kum">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Žanr</mat-label>
+        <mat-select [formControl]="selectedGenre">
+          <mat-option value="">Svi žanrovi</mat-option>
+          <mat-option *ngFor="let genre of genres$ | async" [value]="genre">{{ genre }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Minimalna ocena</mat-label>
+        <mat-select [formControl]="selectedRating">
+          <mat-option [value]="0">Sve ocene</mat-option>
+          <mat-option [value]="4">4+</mat-option>
+          <mat-option [value]="3">3+</mat-option>
+          <mat-option [value]="2">2+</mat-option>
+          <mat-option [value]="1">1+</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>Vreme projekcije</mat-label>
+        <mat-select [formControl]="selectedTime">
+          <mat-option value="">Sva vremena</mat-option>
+          <mat-option *ngFor="let time of times$ | async" [value]="time">{{ time }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="projection-grid">
+    <mat-card *ngFor="let p of projections$ | async" class="projection-card">
+      <img mat-card-image [src]="p.posterUrl" alt="Poster for {{ p.title }}">
+      <mat-card-header>
+        <mat-card-title>{{ p.title }}</mat-card-title>
+        <mat-card-subtitle>{{ p.director }}, {{ p.year }}</mat-card-subtitle>
+        <span class="rating">
+            <mat-icon>star</mat-icon> {{ p.rating }}
+        </span>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-chip-listbox>
+           <mat-chip *ngFor="let genre of p.genre">{{ genre }}</mat-chip>
+        </mat-chip-listbox>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [routerLink]="['/projections', p.id]">
+          Detalji i Rezervacija
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
